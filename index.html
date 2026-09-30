@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kramers–Kronig</title>
+<link rel="stylesheet" href="style.css">
+<script>(function(){try{var t=localStorage.getItem("kk-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<script src="site.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="head-inner">
+    <a class="brand" href="index.html">kramers<b>–</b>kronig</a>
+    <nav class="tabs">
+      <a href="index.html" aria-current="page">home</a>
+      <a href="datan.html">datan</a>
+    </nav>
+    <button class="theme-btn" type="button" aria-label="Toggle colour theme">dark</button>
+  </div>
+</header>
+
+<main>
+  <div class="prose">
+    <p class="eyebrow">Optical &amp; dielectric response simulation codes</p>
+    <h1>Kramers–Kronig transformation</h1>
+    <p class="lede">We collect various codes to compute the Kramers–Kronig transformation and process optical spectroscopy data.</p>
+  </div>
+
+  <div class="meta">
+    <span>python 3.12+</span>
+    <span>numpy · scipy</span>
+    <span>pytest</span>
+  </div>
+
+  <div class="prose">
+    <p>The Kramers–Kronig relations connect the real and imaginary parts of any causal
+    linear response function.</p>
+
+    <p>$$\chi_1(\omega) =  \frac{1}{\pi} \mathcal{P}\!\!\int_{-\infty}^\infty \frac{\chi_2(\omega')}{\omega' - \omega}\,d\omega'$$</p>
+
+    <p>The principal value makes this awkward to evaluate directly. Every method here
+    sidesteps the singularity by expanding \(\varepsilon_2\) in a basis whose transform
+    is known in closed form — so the numerics reduce to a matrix product.</p>
+  </div>
+
+  <h2>Methods</h2>
+  <div class="card-grid">
+    <a class="card" href="datan.html">
+      <span class="k">datan</span>
+      <span class="t">Direct PV integration</span>
+      <span class="d">Developed and maintained by the Prof. David Tanner and colleagues at the University of Florida</span>
+    </a>
+  </div>
+
+</main>
+
+<footer>kramers–kronig · source on github</footer>
+
+</body>
+</html>
