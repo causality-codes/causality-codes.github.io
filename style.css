@@ -232,7 +232,7 @@ pre code {
 
 .card {
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 10px;
   background: var(--surface);
   padding: 1rem 1.1rem;
   text-decoration: none;
