@@ -50,7 +50,7 @@
     btn.addEventListener('click', toggle);
   });
 
-  // Citations: every .cite gets copy buttons for its text and for the BibTeX in its hidden <pre>.
+  // Citations: every .cite gets a copy button offering its text or the BibTeX in its hidden <pre>.
   var COPY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/>' +
     '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 
@@ -69,30 +69,63 @@
     });
   }
 
-  function copyButton(name, getText) {
+  var openMenu = null;
+  function closeMenu() { if (openMenu) { openMenu.hidden = true; openMenu = null; } }
+
+  // One copy button; pressing it opens a menu of formats: [[name, getText], ...].
+  function copyMenu(formats) {
+    var wrap = document.createElement('span');
+    wrap.className = 'cite-actions';
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'copy-btn';
-    btn.setAttribute('aria-label', 'Copy citation as ' + name);
-    btn.innerHTML = COPY_ICON + '<span>' + name + '</span>';
-    btn.addEventListener('click', function () {
-      var span = btn.lastChild;
-      copy(getText()).then(function () { return 'copied'; }, function () { return 'failed'; }).then(function (msg) {
-        span.textContent = msg;
-        setTimeout(function () { span.textContent = name; }, 1500);
+    btn.setAttribute('aria-label', 'Copy citation');
+    btn.setAttribute('aria-haspopup', 'menu');
+    btn.innerHTML = COPY_ICON + '<span></span>';
+    var menu = document.createElement('span');
+    menu.className = 'copy-menu';
+    menu.hidden = true;
+    menu.setAttribute('role', 'menu');
+
+    formats.forEach(function (f) {
+      var item = document.createElement('button');
+      item.type = 'button';
+      item.setAttribute('role', 'menuitem');
+      item.textContent = f[0];
+      item.addEventListener('click', function () {
+        closeMenu();
+        copy(f[1]()).then(function () { return 'copied'; }, function () { return 'failed'; }).then(function (msg) {
+          btn.lastChild.textContent = msg;
+          setTimeout(function () { btn.lastChild.textContent = ''; }, 1500);
+        });
       });
+      menu.appendChild(item);
     });
-    return btn;
+
+    btn.addEventListener('click', function (e) {
+      var wasOpen = openMenu === menu;
+      closeMenu();
+      if (!wasOpen) { menu.hidden = false; openMenu = menu; }
+      e.stopPropagation();
+    });
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+    return wrap;
   }
+
+  document.addEventListener('click', function (e) {
+    if (openMenu && !openMenu.contains(e.target)) closeMenu();
+  });
 
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.cite').forEach(function (cite) {
       var p = cite.querySelector('p'), bib = cite.querySelector('pre');
-      var actions = document.createElement('div');
-      actions.className = 'cite-actions';
-      if (p) actions.appendChild(copyButton('text', function () { return p.textContent.replace(/\s+/g, ' ').trim(); }));
-      if (bib) actions.appendChild(copyButton('BibTeX', function () { return bib.textContent.trim(); }));
-      cite.appendChild(actions);
+      var text = p ? p.textContent.replace(/\s+/g, ' ').trim() : '';
+      var formats = [];
+      if (p) formats.push(['Plain text', function () { return text; }]);
+      if (bib) formats.push(['BibTeX', function () { return bib.textContent.trim(); }]);
+      // The button sits inline, right after the reference text.
+      if (formats.length) (p || cite).appendChild(copyMenu(formats));
     });
   });
 
@@ -133,6 +166,7 @@
     if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
 
     if (e.key === 'Escape') {
+      closeMenu();
       if (help && !help.hidden) help.hidden = true;
     } else if (e.key === '?') {
       if (!help) buildHelp();

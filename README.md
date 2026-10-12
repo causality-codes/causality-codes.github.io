@@ -43,4 +43,4 @@ The nav is duplicated per page by design — no build step, no templating.
       <pre hidden>@article{...}</pre>
     </div>
 
-`site.js` adds the two copy buttons: "text" copies the `<p>`, "BibTeX" copies the hidden `<pre>`.
+`site.js` adds a copy button with a format menu: "Plain text" copies the `<p>`, "BibTeX" copies the hidden `<pre>`.
