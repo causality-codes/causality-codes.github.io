@@ -146,7 +146,10 @@ main {
   padding: 3rem 1.5rem 5rem;
   min-width: 0;
   overflow-x: clip;
+  text-align: justify;
+  hyphens: auto;
 }
+h1, h2, h3, .eyebrow, .card .k, .card .t { text-align: left; hyphens: manual; }
 
 .prose { min-width: 0; }
 
@@ -253,26 +256,20 @@ a.card:hover { border-color: var(--accent); }
 .card .t { font-weight: 600; display: block; margin-bottom: 0.25rem; }
 .card .d { font-size: 0.88rem; color: var(--ink-mid); }
 
-/* download card: text left, download icon (Feather/Lucide "download") right */
-.card.download {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  column-gap: 1rem;
-}
-.card.download > * { grid-column: 1; }
-.card.download::after {
+/* download card: download icon (Feather/Lucide "download") before the title */
+.card.download .t::before {
   content: "";
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  width: 1.4rem;
-  height: 1.4rem;
-  background: var(--ink-dim);
+  display: inline-block;
+  width: 1.05em;
+  height: 1.05em;
+  margin-right: 0.45em;
+  vertical-align: -0.15em;
+  background: currentColor;
   --icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>');
   -webkit-mask: var(--icon) center / contain no-repeat;
   mask: var(--icon) center / contain no-repeat;
 }
-.card.download:hover::after { background: var(--accent); }
+.card.download:hover .t::before { background: var(--accent); }
 
 .meta {
   font-family: var(--mono);
