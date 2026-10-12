@@ -34,3 +34,13 @@ Copy any algorithm page, then:
 3. Add the link to the nav block in all other pages.
 
 The nav is duplicated per page by design — no build step, no templating.
+
+## Adding a citation
+
+    <div class="cite">
+      <span class="k">LABEL</span>
+      <p>Reference as plain text.</p>
+      <pre hidden>@article{...}</pre>
+    </div>
+
+`site.js` adds the two copy buttons: "text" copies the `<p>`, "BibTeX" copies the hidden `<pre>`.

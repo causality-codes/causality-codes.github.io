@@ -50,6 +50,52 @@
     btn.addEventListener('click', toggle);
   });
 
+  // Citations: every .cite gets copy buttons for its text and for the BibTeX in its hidden <pre>.
+  var COPY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/>' +
+    '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    // Fallback for pages opened from disk or over plain http.
+    return new Promise(function (ok, fail) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      var done = document.execCommand('copy');
+      ta.remove();
+      if (done) ok(); else fail();
+    });
+  }
+
+  function copyButton(name, getText) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.setAttribute('aria-label', 'Copy citation as ' + name);
+    btn.innerHTML = COPY_ICON + '<span>' + name + '</span>';
+    btn.addEventListener('click', function () {
+      var span = btn.lastChild;
+      copy(getText()).then(function () { return 'copied'; }, function () { return 'failed'; }).then(function (msg) {
+        span.textContent = msg;
+        setTimeout(function () { span.textContent = name; }, 1500);
+      });
+    });
+    return btn;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.cite').forEach(function (cite) {
+      var p = cite.querySelector('p'), bib = cite.querySelector('pre');
+      var actions = document.createElement('div');
+      actions.className = 'cite-actions';
+      if (p) actions.appendChild(copyButton('text', function () { return p.textContent.replace(/\s+/g, ' ').trim(); }));
+      if (bib) actions.appendChild(copyButton('BibTeX', function () { return bib.textContent.trim(); }));
+      cite.appendChild(actions);
+    });
+  });
+
   // Keep already-loaded pages in step: other tabs, and pages restored by back/forward.
   window.addEventListener('storage', function (e) { if (e.key === 'kk-theme' || e.key === null) sync(); });
   window.addEventListener('pageshow', function (e) { if (e.persisted) sync(); });

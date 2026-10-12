@@ -14,7 +14,7 @@
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", "IBM Plex Mono", Menlo, monospace;
   --sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  --maxw: 90ch;
+  --maxw: 110ch;
   --radius: 3px;
 }
 
@@ -114,7 +114,7 @@ nav.tabs a[aria-current="page"] {
   border-color: color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
-.theme-btn {
+.theme-btn, .copy-btn {
   font-family: var(--mono);
   font-size: 0.72rem;
   background: none;
@@ -128,7 +128,7 @@ nav.tabs a[aria-current="page"] {
   align-items: center;
   gap: 0.35rem;
 }
-.theme-btn svg {
+.theme-btn svg, .copy-btn svg {
   width: 0.9rem;
   height: 0.9rem;
   fill: none;
@@ -137,7 +137,7 @@ nav.tabs a[aria-current="page"] {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.theme-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
+.theme-btn:hover, .copy-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
 
 /* ---------- layout ---------- */
 main {
@@ -233,7 +233,7 @@ pre code {
 }
 
 .card {
-  border: 1.5pt solid var(--line);
+  border: 1pt solid var(--line);
   border-radius: 10px;
   background: var(--surface);
   padding: 1rem 1.1rem;
@@ -270,6 +270,26 @@ a.card:hover { border-color: var(--accent); }
   mask: var(--icon) center / contain no-repeat;
 }
 .card.download:hover .t::before { background: var(--accent); }
+
+/* citation: label, reference text and a hidden <pre> holding the BibTeX entry;
+   site.js adds the copy buttons */
+.cite {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin: 0 0 1.5rem;
+  hyphens: manual;
+}
+.cite .k {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cite p { grid-column: 1 / -1; margin: 0; font-size: 0.92rem; }
+.cite-actions { grid-column: 2; grid-row: 1; display: flex; gap: 0.4rem; }
 
 .meta {
   font-family: var(--mono);
