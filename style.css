@@ -253,6 +253,27 @@ a.card:hover { border-color: var(--accent); }
 .card .t { font-weight: 600; display: block; margin-bottom: 0.25rem; }
 .card .d { font-size: 0.88rem; color: var(--ink-mid); }
 
+/* download card: text left, download icon (Feather/Lucide "download") right */
+.card.download {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 1rem;
+}
+.card.download > * { grid-column: 1; }
+.card.download::after {
+  content: "";
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 1.4rem;
+  height: 1.4rem;
+  background: var(--ink-dim);
+  --icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>');
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+.card.download:hover::after { background: var(--accent); }
+
 .meta {
   font-family: var(--mono);
   font-size: 0.76rem;
