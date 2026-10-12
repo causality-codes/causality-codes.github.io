@@ -1,8 +1,15 @@
 // Theme: respects OS preference until the user picks one, then persists.
 (function () {
-  var saved = null;
-  try { saved = localStorage.getItem('kk-theme'); } catch (e) {}
-  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  // Apply the stored choice; with none stored, fall back to the OS preference.
+  function sync() {
+    var saved = null;
+    try { saved = localStorage.getItem('kk-theme'); } catch (e) {}
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+    else document.documentElement.removeAttribute('data-theme');
+    var btn = document.querySelector('.theme-btn');
+    if (btn) render(btn);
+  }
+  sync();
 
   function label() {
     var t = document.documentElement.getAttribute('data-theme');
@@ -36,6 +43,10 @@
     render(btn);
     btn.addEventListener('click', toggle);
   });
+
+  // Keep already-loaded pages in step: other tabs, and pages restored by back/forward.
+  window.addEventListener('storage', function (e) { if (e.key === 'kk-theme' || e.key === null) sync(); });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) sync(); });
 
   // Keyboard shortcuts: "d" toggles theme, "?" shows the shortcut list, Esc hides it.
   var help = null;
