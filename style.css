@@ -275,9 +275,7 @@ a.card:hover { border-color: var(--accent); }
    site.js adds the copy buttons */
 .cite {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 0.5rem 1rem;
+  gap: 0.5rem;
   margin: 0 0 1.5rem;
   hyphens: manual;
 }
@@ -288,8 +286,8 @@ a.card:hover { border-color: var(--accent); }
   text-transform: uppercase;
   color: var(--accent);
 }
-.cite p { grid-column: 1 / -1; margin: 0; font-size: 0.92rem; }
-.cite-actions { grid-column: 2; grid-row: 1; display: flex; gap: 0.4rem; }
+.cite p { margin: 0; font-size: 0.92rem; }
+.cite-actions { display: flex; gap: 0.4rem; }
 
 .meta {
   font-family: var(--mono);
