@@ -6,8 +6,8 @@ Software and processing codes for Kramers Kronig analysis and related phenomena.
 
 | File | Section |
 |---|---|
-| `index.html` | home — overview, conventions, getting started |
-| `datan.html` | direct principal-value integration (reference implementation) |
+| `index.html` | home — overview and list of codes |
+| `datan.html` | original DATAN binaries, manual and references |
 
 ## Assets
 

@@ -89,7 +89,6 @@ body {
   white-space: nowrap;
   padding: 0.2rem 0;
 }
-.brand b { color: var(--accent); font-weight: 600; }
 
 nav.tabs {
   display: flex;
@@ -239,7 +238,9 @@ pre code {
   color: inherit;
   display: block;
 }
-.card:hover { border-color: var(--accent); }
+a.card:hover { border-color: var(--accent); }
+.card.soon { border-style: dashed; }
+.card.soon .k { color: var(--ink-dim); }
 .card .k {
   font-family: var(--mono);
   font-size: 0.72rem;

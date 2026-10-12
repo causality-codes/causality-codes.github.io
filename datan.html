@@ -3,11 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>datan · Kramers–Kronig</title>
+<title>datan · Causality Codes</title>
+<meta name="description" content="Original DATAN Kramers–Kronig processing codes by David B. Tanner and colleagues: Windows binaries and manual.">
 <link rel="stylesheet" href="style.css">
-<script>(function(){try{var t=localStorage.getItem("kk-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <script src="site.js"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -24,80 +23,53 @@
 
 <main>
   <div class="prose">
-    <p class="eyebrow">Method</p>
-    <h1>datan — direct principal-value integration</h1>
-    <p class="lede">Simpson quadrature on the KK integral with the singularity handled
-    by subtraction. Slow and unglamorous, but it's the ground truth every other method
-    on this site is measured against.</p>
+    <p class="eyebrow">October 12, 2026
+      <span class="tag ok">validated</span>
+      <span class="tag">Fortran</span>
+      <span class="tag wip">Windows only</span>
+    </p>
+    <h1>DATAN originals</h1>
+    <p class="lede">These are the original implementations of the datan processing
+      codes developed and compiled by <a href="https://phys.ufl.edu/people/faculty/david-tanner/">David B. Tanner</a>,
+      Charles D. Porter, Claus S. Jacobsen.
+      Their work dates back as far as 1973 and the software provided below helped many of us understand and
+      publish our research.</p>
   </div>
 
-  <div class="meta">
-    <span class="tag ok">validated</span>
-    <span>kramers_kronig.py</span>
-    <span>scipy.integrate.simpson</span>
-  </div>
-
-  <h2>The problem</h2>
+  <h2>Compiled files</h2>
   <div class="prose">
-    <p>The kernel \(1/(\omega'^2 - \omega^2)\) diverges at \(\omega' = \omega\). Naive
-    quadrature either blows up or, if the grid happens to straddle the pole, returns a
-    value that depends on grid alignment rather than on the physics.</p>
-
-    <p>The standard fix is singularity subtraction. Since</p>
-
-    <p>$$\mathcal{P}\!\!\int_0^\infty \frac{\mathrm{d}\omega'}{\omega'^2 - \omega^2} = 0$$</p>
-
-    <p>we can subtract a multiple of that vanishing integral to remove the pole from the
-    numerator:</p>
-
-    <p>$$\varepsilon_1(\omega) - 1 = \frac{2}{\pi}\int_0^\infty
-    \frac{\omega'\varepsilon_2(\omega') - \omega\,\varepsilon_2(\omega)}
-    {\omega'^2 - \omega^2}\,\mathrm{d}\omega'$$</p>
-
-    <p>The integrand is now regular at \(\omega' = \omega\), where it takes the finite
-    limit \(\bigl[\varepsilon_2(\omega) + \omega\,\varepsilon_2'(\omega)\bigr]/(2\omega)\).
-    Simpson's rule applies directly.</p>
+    <p>These are the original compiled files for <b>Windows</b>.</p>
   </div>
 
-  <h2>Edge effects</h2>
-  <div class="note">
-    Direct PV integration on a finite window turns a nonzero baseline into a
-    logarithmically diverging boundary term. This is the dominant error source, not the
-    quadrature.
+  <div class="card-grid">
+    <a class="card" href="datan/2026-originals/Consol.zip">
+      <span class="t">Programs that run in a terminal</span>
+      <span class="d">Developed and compiled by Prof. Tanner</span>
+    </a>
+    <a class="card" href="datan/2026-originals/wins.zip">
+      <span class="t">GUI programs</span>
+      <span class="d">Developed and compiled by Prof. Tanner</span>
+    </a>
+    <a class="card" href="datan/2026-originals/man.pdf">
+      <span class="t">PDF Manual</span>
+      <span class="d">A detailed manual for using the DATAN software</span>
+    </a>
   </div>
+
+  <h2>References</h2>
   <div class="prose">
-    <p>Three mitigations, applied in order:</p>
-    <ol>
-      <li><b>Mean-centre</b> \(\varepsilon_2\) before transforming. The Hilbert transform
-      annihilates DC — \(\mathrm{sgn}(0) = 0\) — so the constant contributes nothing but
-      boundary artefacts.</li>
-      <li><b>Tukey taper</b> with \(\alpha = 0.2\) to soften the window edges.</li>
-      <li><b>Edge-value padding</b> (not zero-padding) for slowly decaying tails. Zeros
-      introduce a discontinuity that is worse than the truncation it was meant to fix.</li>
-    </ol>
-  </div>
-
-  <h2>Convention</h2>
-  <div class="prose">
-    <p>The RefFIT KK relation (Eq. 2-17) is written on the half-line \([0,\infty)\) and
-    implies an <b>odd</b> extension of \(\varepsilon_2\). This is a different object from
-    the bare full-line Hilbert transform, which uses an even extension. The two differ by
-    more than a sign — mixing them silently produces wrong spectra.</p>
-  </div>
-
-  <h2>Usage</h2>
-<pre><code>from kramers_kronig import kk_simpson
-
-eps1 = kk_simpson(omega, eps2, taper=0.2, pad="edge")</code></pre>
-
-  <h2>Reference</h2>
-  <div class="prose">
-    <p>Named after DATAN (D. B. Tanner), which popularised careful PV quadrature for
-    reflectivity KK analysis in the optical-spectroscopy community.</p>
+    <p>If you used and found these codes helpful we ask you to cite the following papers:</p>
+    <p>For DATAN:<br>
+      Tanner, D. B.; Porter, C. R.; Jacobsen, C. <em>Original Implementation of DATAN</em>. Journal of Optical Society of America,
+      2020.</p>
+    <p>For XRO:<br>
+      Tanner, D. B.; <em>Use of x-ray scattering functions in Kramers–Kronig analysis of reflectance</em>.
+      Phys. Rev. B 91, 035123 (2015);
+      DOI: <a href="https://doi.org/10.1103/PhysRevB.91.035123">10.1103/PhysRevB.91.035123</a></p>
   </div>
 </main>
 
-<footer>Causality Codes · source on github</footer>
+<footer>Causality Codes · <a href="https://github.com/causality-codes/causality-codes.github.io">source on GitHub</a></footer>
 
 </body>
 </html>
