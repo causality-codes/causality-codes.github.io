@@ -1,9 +1,14 @@
 // Theme: respects OS preference until the user picks one, then persists.
 (function () {
+  // Opened from disk, some browsers give every file its own localStorage, so there
+  // the choice also travels as ?theme= on links between pages.
+  var local = location.protocol === 'file:';
+
   // Apply the stored choice; with none stored, fall back to the OS preference.
   function sync() {
-    var saved = null;
-    try { saved = localStorage.getItem('kk-theme'); } catch (e) {}
+    var q = local && /[?&]theme=(light|dark)\b/.exec(location.search);
+    var saved = q && q[1];
+    if (!saved) try { saved = localStorage.getItem('kk-theme'); } catch (e) {}
     if (saved) document.documentElement.setAttribute('data-theme', saved);
     else document.documentElement.removeAttribute('data-theme');
     var btn = document.querySelector('.theme-btn');
@@ -33,6 +38,7 @@
     var next = label();
     document.documentElement.setAttribute('data-theme', next);
     try { localStorage.setItem('kk-theme', next); } catch (e) {}
+    if (local) try { history.replaceState(null, '', '?theme=' + next + location.hash); } catch (e) {}
     var btn = document.querySelector('.theme-btn');
     if (btn) render(btn);
   }
@@ -47,6 +53,13 @@
   // Keep already-loaded pages in step: other tabs, and pages restored by back/forward.
   window.addEventListener('storage', function (e) { if (e.key === 'kk-theme' || e.key === null) sync(); });
   window.addEventListener('pageshow', function (e) { if (e.persisted) sync(); });
+
+  // From disk, hand the choice to the next page through its link.
+  if (local) document.addEventListener('click', function (e) {
+    var t = document.documentElement.getAttribute('data-theme');
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (t && a && a.protocol === 'file:' && /\.html$/.test(a.pathname)) a.search = '?theme=' + t;
+  }, true);
 
   // Keyboard shortcuts: "d" toggles theme, "?" shows the shortcut list, Esc hides it.
   var help = null;
