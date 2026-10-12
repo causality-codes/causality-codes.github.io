@@ -230,7 +230,7 @@ pre code {
 }
 
 .card {
-  border: 1px solid var(--line);
+  border: 2px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
   padding: 1rem 1.1rem;
@@ -239,7 +239,7 @@ pre code {
   display: block;
 }
 a.card:hover { border-color: var(--accent); }
-.card.soon { border-style: dashed; }
+.card.soon { border-style: dashed; border-color: var(--warn); }
 .card.soon .k { color: var(--ink-dim); }
 .card .k {
   font-family: var(--mono);
