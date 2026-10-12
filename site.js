@@ -11,10 +11,8 @@
     if (!saved) try { saved = localStorage.getItem('kk-theme'); } catch (e) {}
     if (saved) document.documentElement.setAttribute('data-theme', saved);
     else document.documentElement.removeAttribute('data-theme');
-    var btn = document.querySelector('.theme-btn');
-    if (btn) render(btn);
+    render();
   }
-  sync();
 
   function label() {
     var t = document.documentElement.getAttribute('data-theme');
@@ -29,9 +27,10 @@
   };
 
   // Button shows the mode it switches to: moon + "dark", or sun + "light".
-  function render(btn) {
+  function render() {
+    var btn = document.querySelector('.theme-btn');
     var t = label();
-    btn.innerHTML = ICONS[t] + '<span>' + t + '</span>';
+    if (btn) btn.innerHTML = ICONS[t] + '<span>' + t + '</span>';
   }
 
   function toggle() {
@@ -39,16 +38,21 @@
     document.documentElement.setAttribute('data-theme', next);
     try { localStorage.setItem('kk-theme', next); } catch (e) {}
     if (local) try { history.replaceState(null, '', '?theme=' + next + location.hash); } catch (e) {}
-    var btn = document.querySelector('.theme-btn');
-    if (btn) render(btn);
+    render();
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    var btn = document.querySelector('.theme-btn');
-    if (!btn) return;
-    render(btn);
-    btn.addEventListener('click', toggle);
-  });
+  sync();
+
+  // Keep already-loaded pages in step: other tabs, and pages restored by back/forward.
+  window.addEventListener('storage', function (e) { if (e.key === 'kk-theme' || e.key === null) sync(); });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) sync(); });
+
+  // From disk, hand the choice to the next page through its link.
+  if (local) document.addEventListener('click', function (e) {
+    var t = document.documentElement.getAttribute('data-theme');
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (t && a && a.protocol === 'file:' && /\.html$/.test(a.pathname)) a.search = '?theme=' + t;
+  }, true);
 
   // Citations: every .cite gets a copy button offering its text or the BibTeX in its hidden <pre>.
   var COPY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/>' +
@@ -118,6 +122,10 @@
   });
 
   document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.querySelector('.theme-btn');
+    if (btn) btn.addEventListener('click', toggle);
+    render();
+
     document.querySelectorAll('.cite').forEach(function (cite) {
       var p = cite.querySelector('p'), bib = cite.querySelector('pre');
       var text = p ? p.textContent.replace(/\s+/g, ' ').trim() : '';
@@ -128,17 +136,6 @@
       if (formats.length) (p || cite).appendChild(copyMenu(formats));
     });
   });
-
-  // Keep already-loaded pages in step: other tabs, and pages restored by back/forward.
-  window.addEventListener('storage', function (e) { if (e.key === 'kk-theme' || e.key === null) sync(); });
-  window.addEventListener('pageshow', function (e) { if (e.persisted) sync(); });
-
-  // From disk, hand the choice to the next page through its link.
-  if (local) document.addEventListener('click', function (e) {
-    var t = document.documentElement.getAttribute('data-theme');
-    var a = e.target.closest && e.target.closest('a[href]');
-    if (t && a && a.protocol === 'file:' && /\.html$/.test(a.pathname)) a.search = '?theme=' + t;
-  }, true);
 
   // Keyboard shortcuts: "d" toggles theme, "?" shows the shortcut list, Esc hides it.
   var help = null;
